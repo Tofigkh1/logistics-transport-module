@@ -1,4 +1,4 @@
-# 🚚 Logistics Transport - Odoo 17 Modulu
+# Logistics Transport - Odoo 17 Modulu
 
 Nəqliyyat və Logistika İdarəetmə Modulu (transport module) - Odoo 17 üçün xüsusi hazırlanmış modul.
 
