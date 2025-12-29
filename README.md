@@ -60,7 +60,7 @@ Modulu Quraşdırın
 3. "Logistics Transport" axtarın
 4. **Install** düyməsinə basın
 
-## 📖 İstifadə Qaydası
+İstifadə Qaydası
 
 ### Yeni Daşınma Yaratmaq
 1. **Logistics Transport** → **Operations** → **Transports**
