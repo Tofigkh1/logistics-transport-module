@@ -1,0 +1,41 @@
+# Virtual Environment
+venv/
+.venv/
+env/
+
+# Odoo Source Code (download separately)
+odoo/
+
+# Configuration with passwords
+odoo.conf
+
+# Log files
+*.log
+odoo.log
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Distribution / packaging
+dist/
+build/
+*.egg-info/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Odoo filestore (if local)
+filestore/
+
+# Session files
+sessions/

@@ -1,0 +1,12 @@
+[options]
+admin_passwd = YOUR_ADMIN_PASSWORD_HERE
+db_host = localhost
+db_port = 5432
+db_user = odoo
+db_password = YOUR_DB_PASSWORD_HERE
+addons_path = C:/path/to/odoo/odoo/addons,C:/path/to/odoo/addons,C:/path/to/custom_addons
+logfile = C:/path/to/odoo.log
+log_level = info
+http_port = 8069
+http_interface = 127.0.0.1
+workers = 0
