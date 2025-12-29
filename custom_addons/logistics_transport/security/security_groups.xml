@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Logistics Module Category -->
+    <record id="module_category_logistics" model="ir.module.category">
+        <field name="name">Logistics</field>
+        <field name="description">Logistics and Transport Management</field>
+        <field name="sequence">50</field>
+    </record>
+
+    <!-- User Group - Basic access -->
+    <record id="group_logistics_user" model="res.groups">
+        <field name="name">User</field>
+        <field name="category_id" ref="module_category_logistics"/>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        <field name="comment">Basic logistics user with read access to all records and create/edit own shipments.</field>
+    </record>
+
+    <!-- Driver Group - Mobile access for drivers -->
+    <record id="group_logistics_driver" model="res.groups">
+        <field name="name">Driver</field>
+        <field name="category_id" ref="module_category_logistics"/>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        <field name="comment">Driver access for viewing assigned shipments and updating delivery status.</field>
+    </record>
+
+    <!-- Dispatcher Group - Full operational access -->
+    <record id="group_logistics_dispatcher" model="res.groups">
+        <field name="name">Dispatcher</field>
+        <field name="category_id" ref="module_category_logistics"/>
+        <field name="implied_ids" eval="[(4, ref('group_logistics_user'))]"/>
+        <field name="comment">Dispatcher with full access to manage shipments, vehicles, and routes.</field>
+    </record>
+
+    <!-- Manager Group - Full administrative access -->
+    <record id="group_logistics_manager" model="res.groups">
+        <field name="name">Manager</field>
+        <field name="category_id" ref="module_category_logistics"/>
+        <field name="implied_ids" eval="[(4, ref('group_logistics_dispatcher'))]"/>
+        <field name="comment">Full administrative access including configuration and reports.</field>
+    </record>
+
+    <!-- Record Rules -->
+    
+    <!-- Shipment Rules -->
+    <record id="shipment_rule_user_own" model="ir.rule">
+        <field name="name">Shipments: User can only see own</field>
+        <field name="model_id" ref="model_logistics_shipment"/>
+        <field name="domain_force">[('create_uid', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('group_logistics_user'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <record id="shipment_rule_dispatcher_all" model="ir.rule">
+        <field name="name">Shipments: Dispatcher can see all</field>
+        <field name="model_id" ref="model_logistics_shipment"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('group_logistics_dispatcher'))]"/>
+    </record>
+
+    <record id="shipment_rule_driver_assigned" model="ir.rule">
+        <field name="name">Shipments: Driver can see assigned only</field>
+        <field name="model_id" ref="model_logistics_shipment"/>
+        <field name="domain_force">[('driver_id.partner_id.user_ids', 'in', [user.id])]</field>
+        <field name="groups" eval="[(4, ref('group_logistics_driver'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <!-- Delivery Rules -->
+    <record id="delivery_rule_driver_assigned" model="ir.rule">
+        <field name="name">Delivery: Driver can update assigned deliveries</field>
+        <field name="model_id" ref="model_logistics_delivery"/>
+        <field name="domain_force">[('driver_id.partner_id.user_ids', 'in', [user.id])]</field>
+        <field name="groups" eval="[(4, ref('group_logistics_driver'))]"/>
+    </record>
+
+    <!-- POD Rules -->
+    <record id="pod_rule_driver_create" model="ir.rule">
+        <field name="name">POD: Driver can create for assigned deliveries</field>
+        <field name="model_id" ref="model_logistics_proof_of_delivery"/>
+        <field name="domain_force">[('driver_id.partner_id.user_ids', 'in', [user.id])]</field>
+        <field name="groups" eval="[(4, ref('group_logistics_driver'))]"/>
+    </record>
+</odoo>

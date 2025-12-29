@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Shipment Sequence -->
+    <record id="sequence_logistics_shipment" model="ir.sequence">
+        <field name="name">Logistics Shipment</field>
+        <field name="code">logistics.shipment</field>
+        <field name="prefix">SHP/%(year)s/</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <!-- Delivery Sequence -->
+    <record id="sequence_logistics_delivery" model="ir.sequence">
+        <field name="name">Logistics Delivery</field>
+        <field name="code">logistics.delivery</field>
+        <field name="prefix">DEL/%(year)s/</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <!-- Proof of Delivery Sequence -->
+    <record id="sequence_logistics_pod" model="ir.sequence">
+        <field name="name">Proof of Delivery</field>
+        <field name="code">logistics.proof.of.delivery</field>
+        <field name="prefix">POD/%(year)s/</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False"/>
+    </record>
+</odoo>

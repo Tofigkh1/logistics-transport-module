@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Main Menu -->
+    <menuitem id="menu_logistics_root"
+        name="Logistics"
+        web_icon="logistics_transport,static/description/icon.png"
+        sequence="40"/>
+
+    <!-- Operations Menu -->
+    <menuitem id="menu_logistics_operations"
+        name="Operations"
+        parent="menu_logistics_root"
+        sequence="10"/>
+
+    <menuitem id="menu_logistics_shipments"
+        name="Shipments"
+        parent="menu_logistics_operations"
+        action="action_logistics_shipment"
+        sequence="10"/>
+
+    <menuitem id="menu_logistics_deliveries"
+        name="Deliveries"
+        parent="menu_logistics_operations"
+        action="action_logistics_delivery"
+        sequence="20"/>
+
+    <menuitem id="menu_logistics_pod"
+        name="Proof of Delivery"
+        parent="menu_logistics_operations"
+        action="action_logistics_pod"
+        sequence="30"/>
+
+    <!-- Planning Menu -->
+    <menuitem id="menu_logistics_planning"
+        name="Planning"
+        parent="menu_logistics_root"
+        sequence="20"/>
+
+    <menuitem id="menu_logistics_routes"
+        name="Routes"
+        parent="menu_logistics_planning"
+        action="action_logistics_route"
+        sequence="10"/>
+
+    <!-- Fleet Menu -->
+    <menuitem id="menu_logistics_fleet"
+        name="Fleet"
+        parent="menu_logistics_root"
+        sequence="30"/>
+
+    <menuitem id="menu_logistics_vehicles"
+        name="Vehicles"
+        parent="menu_logistics_fleet"
+        action="action_logistics_vehicle"
+        sequence="10"/>
+
+    <menuitem id="menu_logistics_drivers"
+        name="Drivers"
+        parent="menu_logistics_fleet"
+        action="action_logistics_driver"
+        sequence="20"/>
+
+    <!-- Configuration Menu -->
+    <menuitem id="menu_logistics_config"
+        name="Configuration"
+        parent="menu_logistics_root"
+        groups="group_logistics_manager"
+        sequence="100"/>
+
+    <menuitem id="menu_logistics_locations"
+        name="Locations"
+        parent="menu_logistics_config"
+        action="action_logistics_location"
+        sequence="10"/>
+</odoo>
