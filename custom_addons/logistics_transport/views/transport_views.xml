@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="seq_logistics_transport" model="ir.sequence">
+        <field name="name">Logistics Transport Sequence</field>
+        <field name="code">logistics.transport</field>
+        <field name="prefix">TRN/%(year)s/</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+
+    <record id="view_logistics_transport_tree" model="ir.ui.view">
+        <field name="name">logistics.transport.tree</field>
+        <field name="model">logistics.transport</field>
+        <field name="arch" type="xml">
+            <tree string="Transports" decoration-info="state == 'draft'" 
+                  decoration-warning="state == 'in_transit'" 
+                  decoration-success="state == 'delivered'"
+                  decoration-danger="state == 'cancelled'"
+                  multi_edit="1">
+                <field name="name" decoration-bf="1"/>
+                <field name="carrier_id"/>
+                <field name="origin_city" optional="show"/>
+                <field name="origin_country_id" optional="hide"/>
+                <field name="destination_city" optional="show"/>
+                <field name="destination_country_id" optional="hide"/>
+                <field name="transport_mode" optional="show"/>
+                <field name="incoterm" optional="hide"/>
+                <field name="date_departure" optional="show"/>
+                <field name="date_arrival" optional="hide"/>
+                <field name="total_quantity" optional="hide"/>
+                <field name="total_weight" optional="hide"/>
+                <field name="state" widget="badge" 
+                       decoration-info="state == 'draft'"
+                       decoration-warning="state == 'in_transit'"
+                       decoration-success="state == 'delivered'"
+                       decoration-danger="state == 'cancelled'"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Transport Form -->
+    <record id="view_logistics_transport_form" model="ir.ui.view">
+        <field name="name">logistics.transport.form</field>
+        <field name="model">logistics.transport</field>
+        <field name="arch" type="xml">
+            <form string="Transport">
+                <header>
+                    <button name="action_confirm" string="Confirm" type="object" 
+                            class="btn-primary" invisible="state != 'draft'"/>
+                    <button name="action_in_transit" string="Start Transit" type="object" 
+                            class="btn-primary" invisible="state != 'confirmed'"/>
+                    <button name="action_deliver" string="Mark Delivered" type="object" 
+                            class="btn-success" invisible="state != 'in_transit'"/>
+                    <button name="action_cancel" string="Cancel" type="object" 
+                            invisible="state in ['delivered', 'cancelled']"/>
+                    <button name="action_draft" string="Reset to Draft" type="object" 
+                            invisible="state != 'cancelled'"/>
+                    <field name="state" widget="statusbar" 
+                           statusbar_visible="draft,confirmed,in_transit,delivered"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                    </div>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Carrier Information">
+                            <field name="carrier_id"/>
+                            <field name="carrier_contact"/>
+                            <field name="carrier_phone"/>
+                            <field name="carrier_email"/>
+                        </group>
+                        <group string="Transport Details">
+                            <field name="transport_mode"/>
+                            <field name="incoterm"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Delivery Period">
+                            <field name="date_departure"/>
+                            <field name="date_arrival"/>
+                            <field name="delivery_duration"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Origin (From)">
+                            <field name="origin_country_id"/>
+                            <field name="origin_city"/>
+                            <field name="origin_address"/>
+                        </group>
+                        <group string="Destination (To)">
+                            <field name="destination_country_id"/>
+                            <field name="destination_city"/>
+                            <field name="destination_address"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Products" name="products">
+                            <field name="transport_line_ids">
+                                <tree editable="bottom">
+                                    <field name="product_id"/>
+                                    <field name="quantity"/>
+                                    <field name="product_uom_id"/>
+                                    <field name="weight"/>
+                                    <field name="volume"/>
+                                    <field name="package_type"/>
+                                    <field name="notes"/>
+                                </tree>
+                            </field>
+                            <group class="oe_subtotal_footer">
+                                <field name="total_quantity"/>
+                                <field name="total_weight"/>
+                                <field name="total_volume"/>
+                            </group>
+                        </page>
+                        <page string="Notes" name="notes">
+                            <field name="notes" placeholder="Add internal notes here..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+
+
+    <record id="view_logistics_transport_kanban" model="ir.ui.view">
+        <field name="name">logistics.transport.kanban</field>
+        <field name="model">logistics.transport</field>
+        <field name="arch" type="xml">
+            <kanban class="o_kanban_mobile" default_group_by="state" quick_create="false">
+                <field name="name"/>
+                <field name="carrier_id"/>
+                <field name="origin_city"/>
+                <field name="destination_city"/>
+                <field name="transport_mode"/>
+                <field name="date_departure"/>
+                <field name="state"/>
+                <field name="total_weight"/>
+                <progressbar field="state" colors='{"draft": "secondary", "confirmed": "info", "in_transit": "warning", "delivered": "success", "cancelled": "danger"}'/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div t-attf-class="oe_kanban_card oe_kanban_global_click">
+                            <div class="oe_kanban_content">
+                                <div class="o_kanban_record_top mb-2">
+                                    <div class="o_kanban_record_headings">
+                                        <strong class="o_kanban_record_title">
+                                            <field name="name"/>
+                                        </strong>
+                                    </div>
+                                    <field name="state" widget="label_selection" options="{'classes': {'draft': 'secondary', 'confirmed': 'info', 'in_transit': 'warning', 'delivered': 'success', 'cancelled': 'danger'}}"/>
+                                </div>
+                                <div class="o_kanban_record_body">
+                                    <div><strong>Carrier:</strong> <field name="carrier_id"/></div>
+                                    <div class="text-muted">
+                                        <i class="fa fa-map-marker"/> <field name="origin_city"/> → <field name="destination_city"/>
+                                    </div>
+                                    <div class="text-muted">
+                                        <i class="fa fa-truck"/> <field name="transport_mode"/>
+                                    </div>
+                                </div>
+                                <div class="o_kanban_record_bottom">
+                                    <div class="oe_kanban_bottom_left">
+                                        <i class="fa fa-calendar"/> <field name="date_departure" widget="date"/>
+                                    </div>
+                                    <div class="oe_kanban_bottom_right">
+                                        <i class="fa fa-balance-scale"/> <field name="total_weight"/> kg
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+
+    <record id="view_logistics_transport_search" model="ir.ui.view">
+        <field name="name">logistics.transport.search</field>
+        <field name="model">logistics.transport</field>
+        <field name="arch" type="xml">
+            <search string="Search Transport">
+                <field name="name"/>
+                <field name="carrier_id"/>
+                <field name="origin_city"/>
+                <field name="destination_city"/>
+                <field name="origin_country_id"/>
+                <field name="destination_country_id"/>
+                <separator/>
+                <filter string="Draft" name="draft" domain="[('state', '=', 'draft')]"/>
+                <filter string="Confirmed" name="confirmed" domain="[('state', '=', 'confirmed')]"/>
+                <filter string="In Transit" name="in_transit" domain="[('state', '=', 'in_transit')]"/>
+                <filter string="Delivered" name="delivered" domain="[('state', '=', 'delivered')]"/>
+                <separator/>
+                <filter string="Road" name="road" domain="[('transport_mode', '=', 'road')]"/>
+                <filter string="Sea" name="sea" domain="[('transport_mode', '=', 'sea')]"/>
+                <filter string="Air" name="air" domain="[('transport_mode', '=', 'air')]"/>
+                <filter string="Rail" name="rail" domain="[('transport_mode', '=', 'rail')]"/>
+                <separator/>
+                <group expand="0" string="Group By">
+                    <filter string="Carrier" name="groupby_carrier" context="{'group_by': 'carrier_id'}"/>
+                    <filter string="Transport Mode" name="groupby_mode" context="{'group_by': 'transport_mode'}"/>
+                    <filter string="Status" name="groupby_state" context="{'group_by': 'state'}"/>
+                    <filter string="Origin Country" name="groupby_origin" context="{'group_by': 'origin_country_id'}"/>
+                    <filter string="Destination Country" name="groupby_destination" context="{'group_by': 'destination_country_id'}"/>
+                    <filter string="Departure Date" name="groupby_departure" context="{'group_by': 'date_departure:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+
+    <record id="action_logistics_transport" model="ir.actions.act_window">
+        <field name="name">Transports</field>
+        <field name="res_model">logistics.transport</field>
+        <field name="view_mode">tree,kanban,form</field>
+        <field name="search_view_id" ref="view_logistics_transport_search"/>
+        <field name="context">{}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+              İlk nəqliyyat sifarişinizi yaradın
+            </p>
+            <p>
+               Daşıyıcı məlumatları, məhsul məlumatları və çatdırılma cədvəlləri ilə daşınmalarınızı mənbədən təyinat yerinə qədər izləyin.
+            </p>
+        </field>
+    </record>
+
+
+    <menuitem id="menu_logistics_transport_root"
+              name="Logistics Transport"
+              sequence="50"
+              web_icon="logistics_transport,static/description/icon.png"/>
+
+ 
+    <menuitem id="menu_logistics_transport_operations"
+              name="Operations"
+              parent="menu_logistics_transport_root"
+              sequence="10"/>
+
+    <menuitem id="menu_logistics_transport_list"
+              name="Transports"
+              parent="menu_logistics_transport_operations"
+              action="action_logistics_transport"
+              sequence="10"/>
+
+    <menuitem id="menu_logistics_transport_config"
+              name="Configuration"
+              parent="menu_logistics_transport_root"
+              sequence="90"
+              groups="base.group_system"/>
+
+</odoo>
+

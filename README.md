@@ -1,87 +1,94 @@
-# Odoo 17.0 Projesi
+# 🚚 Logistics Transport - Odoo 17 Modulu
 
-Bu proje Odoo 17.0 ERP sistemini içermektedir.
+Nəqliyyat və Logistika İdarəetmə Modulu (transport module) - Odoo 17 üçün xüsusi hazırlanmış modul.
 
-## Kurulum Tamamlandı
+## layihə Haqqında
 
-✅ Python 3.10 sanal ortam  
-✅ Odoo 17.0 kaynak kodu  
-✅ Tüm Python bağımlılıkları  
+Bu modul daşınmaların mənbədən təyinat yerinə qədər izlənməsini təmin edir. Daşıyıcı məlumatları, məhsul detalları, çatdırılma cədvəlləri və PDF hesabatları ilə tam logistika idarəetməsi.
 
-## PostgreSQL Kurulumu (Gerekli)
+Xüsusiyyətlər
+| Daşıyıcı şirkət, əlaqə şəxsi, telefon və email məlumatları |
+| Yola çıxma/gəliş tarixləri, müddət hesablanması (tam ədəd) |
+| Ölkə, şəhər və ünvan məlumatları |
+| Yol, Dəmir yolu, Dəniz, Hava, Multimodal |
+| Beynəlxalq ticarət şərtləri (EXW, FOB, CIF və s.) |
+| Məhsullar, miqdar, çəki, həcm, qablaşdırma növü |
+| Peşəkar transport sənədi çapı |
+| Kanban və optimallaşdırılmış siyahı görünüşü |
+| Mesajlaşma, qeydlər və aktivitə izləmə |
 
-Odoo çalışması için PostgreSQL veritabanı gereklidir:
+Texniki Məlumat
+| **Odoo Versiyası** | 17.0 |
+| **Python Versiyası** | 3.10+ |
+| **Lisenziya** | LGPL-3 |
+| **Asılılıqlar** | base, mail, product, stock |
 
-### Yöntem 1: PostgreSQL Kurulumu (Önerilen)
-1. https://www.postgresql.org/download/windows/ adresinden PostgreSQL indirin
-2. Kurulum sırasında şifre olarak `odoo` belirleyin
-3. pgAdmin'i açın ve yeni bir kullanıcı oluşturun:
-   - Kullanıcı adı: `odoo`
-   - Şifre: `odoo`
-   - Superuser: Evet
+Modul Strukturu
 
-### Yöntem 2: Docker ile
-```bash
-docker run -d --name odoo-postgres -e POSTGRES_USER=odoo -e POSTGRES_PASSWORD=odoo -e POSTGRES_DB=postgres -p 5432:5432 postgres:15
-```
 
-## Odoo'yu Başlatma
-
-### PowerShell ile:
-```powershell
-cd C:\Users\BEST16\Desktop\odoo-project
-.\venv\Scripts\Activate.ps1
-cd odoo
-python odoo-bin -c ..\odoo.conf
-```
-
-### Batch dosyası ile:
-```
-start_odoo.bat
-```
-
-## Erişim
-
-Sunucu başladıktan sonra:
-- URL: http://localhost:8069
-- Master Password: admin
-
-## Proje Yapısı
-
-```
-odoo-project/
-├── venv/               # Python sanal ortam
-├── odoo/               # Odoo kaynak kodu
-├── custom_addons/      # Özel modülleriniz için
-├── odoo.conf           # Odoo yapılandırma dosyası
-├── start_odoo.bat      # Windows başlatma scripti
-└── README.md           # Bu dosya
-```
-
-## Özel Modül Geliştirme
-
-`custom_addons/` klasörüne yeni modüller ekleyebilirsiniz.
-
-Örnek modül yapısı:
-```
 custom_addons/
-└── my_module/
+└── logistics_transport/
     ├── __init__.py
     ├── __manifest__.py
     ├── models/
+    │   ├── __init__.py
+    │   └── transport.py
     ├── views/
-    └── security/
+    │   └── transport_views.xml
+    ├── report/
+    │   └── transport_report.xml
+    ├── security/
+    │   └── ir.model.access.csv
+    └── static/
+        └── description/
+            └── icon.png
+
+Tələblər
+- Odoo 17.0
+- PostgreSQL 12+
+- Python 3.10+
+- wkhtmltopdf (PDF hesabatları üçün)
+
+Odoo Mənbə Kodunu Klonlayın
+git clone https://github.com/odoo/odoo.git --depth 1 --branch 17.0
+
+
+
+Modulu Quraşdırın
+1. Brauzerdə `http://localhost:8069` açın
+2. **Apps** menyusuna daxil olun
+3. "Logistics Transport" axtarın
+4. **Install** düyməsinə basın
+
+## 📖 İstifadə Qaydası
+
+### Yeni Daşınma Yaratmaq
+1. **Logistics Transport** → **Operations** → **Transports**
+2. **New** düyməsinə basın
+3. Formu doldurun:
+   - Daşıyıcı seçin
+   - Mənbə və təyinat məlumatlarını daxil edin
+   - Nəqliyyat növünü seçin
+   - Tarixləri təyin edin
+4. **Products** tabında məhsulları əlavə edin
+5. **Save** edin
+
+### Status Axını
 ```
+Draft → Confirmed → In Transit → Delivered → Cancelled
 
-## Faydalı Komutlar
 
-```powershell
-# Modül güncelleme
-python odoo-bin -c ..\odoo.conf -u my_module
+### PDF Hesabat
+- Daşınma formasında **Print** düyməsinə basın
+- "Transport Document" seçin
 
-# Tüm modülleri yükleme
-python odoo-bin -c ..\odoo.conf -i base
+## 🔧 Konfiqurasiya Faylları
 
-# Geliştirici modu ile çalıştırma
-python odoo-bin -c ..\odoo.conf --dev=all
-```
+### odoo.conf.example
+[options]
+db_host = localhost
+db_port = 5432
+db_user = odoo
+db_password = odoo
+addons_path = odoo/odoo/addons,odoo/addons,custom_addons
+http_port = 8069

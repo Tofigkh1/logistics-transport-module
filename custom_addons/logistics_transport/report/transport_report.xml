@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Report Action -->
+    <record id="action_report_transport" model="ir.actions.report">
+        <field name="name">Transport Document</field>
+        <field name="model">logistics.transport</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">logistics_transport.report_transport_document</field>
+        <field name="report_file">logistics_transport.report_transport_document</field>
+        <field name="print_report_name">'Transport - %s' % (object.name)</field>
+        <field name="binding_model_id" ref="model_logistics_transport"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <!-- Report Template -->
+    <template id="report_transport_document">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <!-- Header -->
+                        <div class="row">
+                            <div class="col-12 text-center">
+                                <h2 style="color: #875A7B; border-bottom: 2px solid #875A7B; padding-bottom: 10px;">
+                                    <strong>TRANSPORT DOCUMENT</strong>
+                                </h2>
+                            </div>
+                        </div>
+
+                        <!-- Reference and Status -->
+                        <div class="row mt-4">
+                            <div class="col-6">
+                                <h3><strong>Reference:</strong> <span t-field="doc.name"/></h3>
+                            </div>
+                            <div class="col-6 text-end">
+                                <span class="badge" style="font-size: 14px; padding: 8px 15px;"
+                                      t-attf-style="background-color: #{doc.state == 'draft' and '#17a2b8' or doc.state == 'confirmed' and '#007bff' or doc.state == 'in_transit' and '#ffc107' or doc.state == 'delivered' and '#28a745' or '#dc3545'}; color: white;">
+                                    <t t-if="doc.state == 'draft'">Draft</t>
+                                    <t t-if="doc.state == 'confirmed'">Confirmed</t>
+                                    <t t-if="doc.state == 'in_transit'">In Transit</t>
+                                    <t t-if="doc.state == 'delivered'">Delivered</t>
+                                    <t t-if="doc.state == 'cancelled'">Cancelled</t>
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Carrier Information -->
+                        <div class="row mt-4">
+                            <div class="col-12">
+                                <div style="background-color: #f8f9fa; padding: 15px; border-radius: 5px;">
+                                    <h4 style="color: #875A7B; margin-bottom: 15px;">
+                                        <strong>Carrier Information</strong>
+                                    </h4>
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <p><strong>Carrier:</strong> <span t-field="doc.carrier_id.name"/></p>
+                                            <p><strong>Contact:</strong> <span t-field="doc.carrier_contact"/></p>
+                                        </div>
+                                        <div class="col-6">
+                                            <p><strong>Phone:</strong> <span t-field="doc.carrier_phone"/></p>
+                                            <p><strong>Email:</strong> <span t-field="doc.carrier_email"/></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Transport Details -->
+                        <div class="row mt-4">
+                            <div class="col-6">
+                                <div style="background-color: #e8f4f8; padding: 15px; border-radius: 5px; height: 100%;">
+                                    <h4 style="color: #17a2b8;">
+                                        <strong>Transport Details</strong>
+                                    </h4>
+                                    <p><strong>Mode:</strong> 
+                                        <t t-if="doc.transport_mode == 'road'">Road Transport</t>
+                                        <t t-if="doc.transport_mode == 'rail'">Rail Transport</t>
+                                        <t t-if="doc.transport_mode == 'sea'">Sea Freight</t>
+                                        <t t-if="doc.transport_mode == 'air'">Air Freight</t>
+                                        <t t-if="doc.transport_mode == 'multimodal'">Multimodal</t>
+                                    </p>
+                                    <p t-if="doc.incoterm">
+                                        <strong>Incoterm:</strong> <span t-field="doc.incoterm"/>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div style="background-color: #fff3cd; padding: 15px; border-radius: 5px; height: 100%;">
+                                    <h4 style="color: #856404;">
+                                        <strong>Delivery Period</strong>
+                                    </h4>
+                                    <p><strong>Departure:</strong> <span t-field="doc.date_departure" t-options='{"widget": "datetime"}'/></p>
+                                    <p><strong>Arrival:</strong> <span t-field="doc.date_arrival" t-options='{"widget": "datetime"}'/></p>
+                                    <p><strong>Duration:</strong> <span t-field="doc.delivery_duration"/> days</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Origin and Destination -->
+                        <div class="row mt-4">
+                            <div class="col-6">
+                                <div style="background-color: #d4edda; padding: 15px; border-radius: 5px; height: 100%;">
+                                    <h4 style="color: #155724;">
+                                        <strong>📍 Origin (From)</strong>
+                                    </h4>
+                                    <p><strong>Country:</strong> <span t-field="doc.origin_country_id.name"/></p>
+                                    <p><strong>City:</strong> <span t-field="doc.origin_city"/></p>
+                                    <p><strong>Address:</strong><br/><span t-field="doc.origin_address"/></p>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div style="background-color: #f8d7da; padding: 15px; border-radius: 5px; height: 100%;">
+                                    <h4 style="color: #721c24;">
+                                        <strong>📍 Destination (To)</strong>
+                                    </h4>
+                                    <p><strong>Country:</strong> <span t-field="doc.destination_country_id.name"/></p>
+                                    <p><strong>City:</strong> <span t-field="doc.destination_city"/></p>
+                                    <p><strong>Address:</strong><br/><span t-field="doc.destination_address"/></p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Products Table -->
+                        <div class="row mt-4">
+                            <div class="col-12">
+                                <h4 style="color: #875A7B; border-bottom: 1px solid #875A7B; padding-bottom: 5px;">
+                                    <strong>Products</strong>
+                                </h4>
+                                <table class="table table-bordered table-sm mt-3">
+                                    <thead style="background-color: #875A7B; color: white;">
+                                        <tr>
+                                            <th>Product</th>
+                                            <th class="text-center">Quantity</th>
+                                            <th class="text-center">UoM</th>
+                                            <th class="text-center">Weight (kg)</th>
+                                            <th class="text-center">Volume (m³)</th>
+                                            <th class="text-center">Package</th>
+                                            <th>Notes</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <t t-foreach="doc.transport_line_ids" t-as="line">
+                                            <tr>
+                                                <td><span t-field="line.product_id.name"/></td>
+                                                <td class="text-center"><span t-field="line.quantity"/></td>
+                                                <td class="text-center"><span t-field="line.product_uom_id.name"/></td>
+                                                <td class="text-center"><span t-field="line.weight"/></td>
+                                                <td class="text-center"><span t-field="line.volume"/></td>
+                                                <td class="text-center">
+                                                    <t t-if="line.package_type == 'box'">Box</t>
+                                                    <t t-if="line.package_type == 'pallet'">Pallet</t>
+                                                    <t t-if="line.package_type == 'container'">Container</t>
+                                                    <t t-if="line.package_type == 'bulk'">Bulk</t>
+                                                    <t t-if="line.package_type == 'other'">Other</t>
+                                                </td>
+                                                <td><span t-field="line.notes"/></td>
+                                            </tr>
+                                        </t>
+                                    </tbody>
+                                    <tfoot style="background-color: #f8f9fa; font-weight: bold;">
+                                        <tr>
+                                            <td><strong>TOTAL</strong></td>
+                                            <td class="text-center"><span t-field="doc.total_quantity"/></td>
+                                            <td></td>
+                                            <td class="text-center"><span t-field="doc.total_weight"/></td>
+                                            <td class="text-center"><span t-field="doc.total_volume"/></td>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Notes -->
+                        <t t-if="doc.notes">
+                            <div class="row mt-4">
+                                <div class="col-12">
+                                    <div style="background-color: #f8f9fa; padding: 15px; border-radius: 5px;">
+                                        <h4><strong>Notes</strong></h4>
+                                        <p t-field="doc.notes"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+
+                        <!-- Signatures -->
+                        <div class="row mt-5">
+                            <div class="col-6 text-center">
+                                <div style="border-top: 1px solid #000; width: 80%; margin: 0 auto; padding-top: 10px;">
+                                    <strong>Shipper Signature</strong>
+                                </div>
+                            </div>
+                            <div class="col-6 text-center">
+                                <div style="border-top: 1px solid #000; width: 80%; margin: 0 auto; padding-top: 10px;">
+                                    <strong>Carrier Signature</strong>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Footer -->
+                        <div class="row mt-4">
+                            <div class="col-12 text-center" style="font-size: 10px; color: #666;">
+                                <p>Document generated on <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%Y-%m-%d %H:%M:%S')"/></p>
+                            </div>
+                        </div>
+
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>
+

@@ -1,12 +1,21 @@
 [options]
-admin_passwd = YOUR_ADMIN_PASSWORD_HERE
+; Database settings
 db_host = localhost
 db_port = 5432
 db_user = odoo
-db_password = YOUR_DB_PASSWORD_HERE
-addons_path = C:/path/to/odoo/odoo/addons,C:/path/to/odoo/addons,C:/path/to/custom_addons
-logfile = C:/path/to/odoo.log
+db_password = your_password_here
+
+; Addons path
+addons_path = odoo/odoo/addons,odoo/addons,custom_addons
+
+; Logging
+logfile = odoo.log
 log_level = info
+
+; Server settings
 http_port = 8069
 http_interface = 127.0.0.1
 workers = 0
+
+; PDF Generation (install wkhtmltopdf first)
+; wkhtmltopdf_path = C:/Program Files/wkhtmltopdf/bin/wkhtmltopdf.exe

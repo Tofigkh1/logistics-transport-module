@@ -1,28 +1,26 @@
-# Virtual Environment
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment
 venv/
-.venv/
 env/
+.venv/
 
-# Odoo Source Code (download separately)
+# Odoo source code (should be cloned separately)
 odoo/
-
-# Configuration with passwords
-odoo.conf
 
 # Log files
 *.log
 odoo.log
 
-# Python cache
-__pycache__/
-*.py[cod]
-*$py.class
-*.so
+# Configuration with sensitive data
+odoo.conf
 
-# Distribution / packaging
-dist/
-build/
-*.egg-info/
+# Installer files
+*.exe
+wkhtmltopdf-installer.exe
 
 # IDE
 .idea/
@@ -30,12 +28,17 @@ build/
 *.swp
 *.swo
 
-# OS files
+# OS generated files
 .DS_Store
 Thumbs.db
 
-# Odoo filestore (if local)
-filestore/
+# Temporary files
+*.tmp
+*.temp
 
-# Session files
-sessions/
+# Database dumps
+*.sql
+*.dump
+
+# Test module (optional)
+custom_addons/my_first_module/
